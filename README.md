@@ -41,6 +41,48 @@ streamlit run app.py
 ### 意匠
 - 存続期間満了：登録日 + 25年
 
+## Windows デスクトップアプリ（.exe）としてビルド
+
+Python がインストールされていない PC にも配布できる `.exe` を生成できます。
+
+### 前提条件
+
+- Windows 10/11 + Python 3.11 以上（**ビルドする PC** のみに必要）
+- インターネット接続（初回ビルド時のパッケージダウンロード）
+
+### ビルド手順
+
+```bat
+build.bat
+```
+
+`build.bat` をダブルクリックするだけです。初回は 5〜10 分ほどかかります。
+
+### 成果物
+
+```
+dist\IPDeadlineManager\
+├── IPDeadlineManager.exe   ← ダブルクリックで起動
+├── _internal\              ← ランタイム（削除不可）
+└── deadline.db             ← 初回起動時に自動生成
+```
+
+### 配布方法
+
+`dist\IPDeadlineManager\` フォルダをそのまま ZIP にして渡してください。  
+受け取った PC では `IPDeadlineManager.exe` をダブルクリックするだけで  
+ブラウザが自動的に開きアプリが起動します。Python 不要。
+
+### 仕組み
+
+| ファイル | 役割 |
+|---------|------|
+| `launcher.py` | PyInstaller エントリポイント。空きポートを探してStreamlit を起動し、準備完了後にブラウザを自動オープン |
+| `build.bat` | PyInstaller を呼び出す Windows ビルドスクリプト |
+
+> **注意**: `--noconsole` フラグを使っているためコンソールは表示されません。  
+> 起動しない場合は `build.bat` 内の `--noconsole` を削除してコンソールのエラーを確認してください。
+
 ## ファイル構成
 
 ```
@@ -48,6 +90,8 @@ deadline-manager/
 ├── app.py           # Streamlit エントリポイント
 ├── db.py            # DB初期化・CRUD
 ├── logic.py         # 期限計算・サンプルデータ投入
+├── launcher.py      # PyInstaller用 起動スクリプト
+├── build.bat        # Windows .exe ビルドスクリプト
 ├── requirements.txt
 ├── README.md
 └── deadline.db      # 初回起動時に自動生成

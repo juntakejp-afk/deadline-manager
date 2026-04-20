@@ -3,7 +3,10 @@ import os
 from datetime import datetime, date
 from contextlib import contextmanager
 
-DB_PATH = os.path.join(os.path.dirname(__file__), "deadline.db")
+# DEADLINE_DB_DIR is set by launcher.py when running as a PyInstaller bundle
+# so that deadline.db is created next to the .exe, not in the temp extraction dir.
+_db_dir = os.environ.get("DEADLINE_DB_DIR") or os.path.dirname(os.path.abspath(__file__))
+DB_PATH = os.path.join(_db_dir, "deadline.db")
 
 
 @contextmanager
